@@ -63,7 +63,7 @@
             } else if (winGame(gameBoard, currentPlayer)) {
               over = true
               $('body').hide(5000, function(){
-                $('body').show(5000).html("<h1>" + currentPlayer + " WINS!!</h1>")
+                $('body').show(5000).html("<h1>" + currentPlayer + " WINS!!</h1><div class='mike'></div>")
               })
             } else {
               console.log('keep playing...')
