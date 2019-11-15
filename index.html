@@ -11,7 +11,22 @@
 
         const gameBoard = ['','','','','','','','','']
         let currentPlayer = 'X'
+        let over = true
         console.log('document is ready')
+
+        const startGame = () => {
+          over = false
+          $('.container').animate({
+            //opacity: 0.25,
+            left: "+=50",
+            // display: 'toggle',
+            height: "toggle"
+          }, 5000, function() {
+            // Animation complete.
+          });
+        }
+
+        $('#start').click(startGame)
 
         const occupied = value => {
           return value !== ''
@@ -25,7 +40,7 @@
         }
 
         const winConditions = (player) => {
-          return [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[2,5,8],[2,4,6],[0,4,8]]
+          return [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[2,4,6],[0,4,8]]
         }
 
         const winGame = (gameBoard, player) => {
@@ -38,16 +53,23 @@
         }
 
         $('.overlay').click(function(event) {
-          $(event.target).text(currentPlayer)
-          $(event.target).removeClass('overlay')
-          gameBoard[$(event.target).attr('id')] = currentPlayer
-          if (drawGame(gameBoard)) {
-          } else if (winGame(gameBoard, currentPlayer)) {
-            alert(`${currentPlayer} wins!`)
-          } else {
-            console.log('keep playing...')
+          if (!over) {
+            $(event.target).text(currentPlayer)
+
+            $(event.target).removeClass('overlay')
+            gameBoard[$(event.target).attr('id')] = currentPlayer
+            if (drawGame(gameBoard)) {
+              over = true
+            } else if (winGame(gameBoard, currentPlayer)) {
+              over = true
+              $('body').hide(5000, function(){
+                $('body').show(5000).html("<h1>" + currentPlayer + " WINS!!</h1>")
+              })
+            } else {
+              console.log('keep playing...')
+            }
+            currentPlayer = currentPlayer === 'X' ? 'O' : 'X'
           }
-          currentPlayer = currentPlayer === 'X' ? 'O' : 'X'
         })
       })
     </script>
@@ -73,7 +95,7 @@
     </div>
 
     <h3> 3x3 using rows and columns </h3>
-    <div class="container">
+    <div class="container" style="display:none;">
       <div class="row">
         <div class="column overlay" id="0">
           <!-- 33.33% width -->
@@ -108,5 +130,6 @@
         </div>
       </div>
     </div>
+    <button id='start'>Start Game</button>
   </body>
 </html>
