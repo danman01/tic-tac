@@ -1,0 +1,59 @@
+.row-container {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+.row-container .col {
+  flex: 1;
+  border: solid 1px black;
+  width: 32%;
+}
+.flex-grid-thirds {
+  display: flex;
+  justify-content: space-between;
+}
+.flex-grid-thirds .col {
+  width: 32%;
+}
+
+.container {
+  width: 400px;
+  margin: 0 auto; /* old skool centering trick */
+  background-image: url('./teaser.png');
+  background-repeat: no-repeat;
+  background-position: 25px;
+  background-size: cover;
+}
+.overlay {
+  z-index: 10;
+  background-color: white;
+}
+
+.row {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.column {
+  flex-basis: 100%;
+  border: solid 2px black;
+  height: 100px;
+}
+
+@media screen and (min-width: 100px) {
+  .column {
+    flex: 1;
+  }
+}
+
+@media (max-width: 400px) {
+  .flex-grid,
+  .flex-grid-thirds {
+    display: block;
+    .col {
+      width: 100%;
+      margin: 0 0 10px 0;
+    }
+  }
+}

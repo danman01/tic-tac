@@ -1,0 +1,112 @@
+<html>
+  <head>
+    <link rel="stylesheet" href="./index.css">
+    <script
+      src="https://code.jquery.com/jquery-3.4.1.min.js"
+      integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+      crossorigin="anonymous">
+    </script>
+    <script type='text/javascript'>
+      $(document).ready(function() {
+
+        const gameBoard = ['','','','','','','','','']
+        let currentPlayer = 'X'
+        console.log('document is ready')
+
+        const occupied = value => {
+          return value !== ''
+        }
+
+        const drawGame = (gameBoard) => {
+          if (gameBoard.every(occupied)) {
+            console.log("it's a tie!")
+            return true
+          }
+        }
+
+        const winConditions = (player) => {
+          return [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[2,5,8],[2,4,6],[0,4,8]]
+        }
+
+        const winGame = (gameBoard, player) => {
+          const indexesOfPlayer = gameBoard.map((piece, i) => piece === player ? i : undefined)
+            .filter((val) => val !== undefined)
+
+          return winConditions().some((arr) => {
+            return indexesOfPlayer.toString() === arr.toString()
+          })
+        }
+
+        $('.overlay').click(function(event) {
+          $(event.target).text(currentPlayer)
+          $(event.target).removeClass('overlay')
+          gameBoard[$(event.target).attr('id')] = currentPlayer
+          if (drawGame(gameBoard)) {
+          } else if (winGame(gameBoard, currentPlayer)) {
+            alert(`${currentPlayer} wins!`)
+          } else {
+            console.log('keep playing...')
+          }
+          currentPlayer = currentPlayer === 'X' ? 'O' : 'X'
+        })
+      })
+    </script>
+  </head>
+  <body>
+    <h3> 3x1 </h3>
+    <div class="row-container">
+      <div class="col">This little piggy went to market.</div>
+      <div class="col">This little piggy stayed home.</div>
+      <div class="col">This little piggy had roast beef.</div>
+    </div>
+
+    <h3> 3x2 </h3>
+    <div class="row-container">
+      <div class="col">This little piggy went to market.</div>
+      <div class="col">This little piggy stayed home.</div>
+      <div class="col">This little piggy had roast beef.</div>
+    </div>
+    <div class="row-container">
+      <div class="col">This little piggy went to market.</div>
+      <div class="col">This little piggy stayed home.</div>
+      <div class="col">This little piggy had roast beef.</div>
+    </div>
+
+    <h3> 3x3 using rows and columns </h3>
+    <div class="container">
+      <div class="row">
+        <div class="column overlay" id="0">
+          <!-- 33.33% width -->
+        </div>
+        <div class="column overlay" id="1">
+          <!-- 33.33% width -->
+        </div>
+        <div class="column overlay" id="2">
+          <!-- 33.33% width -->
+        </div>
+      </div>
+      <div class="row">
+        <div class="column overlay" id="3">
+          <!-- 33.33% width -->
+        </div>
+        <div class="column overlay" id="4">
+          <!-- 33.33% width -->
+        </div>
+        <div class="column overlay" id="5">
+          <!-- 33.33% width -->
+        </div>
+      </div>
+      <div class="row">
+        <div class="column overlay" id="6">
+          <!-- 33.33% width -->
+        </div>
+        <div class="column overlay" id="7">
+          <!-- 33.33% width -->
+        </div>
+        <div class="column overlay" id="8">
+          <!-- 33.33% width -->
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
