@@ -9,13 +9,20 @@
     <script type='text/javascript'>
       $(document).ready(function() {
 
-        const gameBoard = ['','','','','','','','','']
-        let currentPlayer = 'X'
+        let gameBoard
+        let currentPlayer
         let over = true
-        console.log('document is ready')
+        const gameHtml = $('body').html()
 
-        const startGame = () => {
+        const startGame = (event, gameHtml) => {
+          gameBoard = ['','','','','','','','','']
+          currentPlayer = 'X'
           over = false
+          if(gameHtml !== undefined) {
+            console.log('replacing game html...')
+            $('body').html(gameHtml)
+          }
+          $('.overlay').click(onSquareClick)
           $('.container').animate({
             //opacity: 0.25,
             left: "+=50",
@@ -24,6 +31,7 @@
           }, 5000, function() {
             // Animation complete.
           });
+          $("#start").hide()
         }
 
         $('#start').click(startGame)
@@ -39,7 +47,7 @@
           }
         }
 
-        const winConditions = (player) => {
+        const winConditions = () => {
           return [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[2,4,6],[0,4,8]]
         }
 
@@ -47,32 +55,47 @@
           const indexesOfPlayer = gameBoard.map((piece, i) => piece === player ? i : undefined)
             .filter((val) => val !== undefined)
 
+          // find a win condition, where every number in win condition is within player indexes
           return winConditions().some((arr) => {
-            return indexesOfPlayer.toString() === arr.toString()
+            console.log('indexesofPlayer', player, indexesOfPlayer)
+            // '2,4,5,6' matches '2,4,6'
+            // '6,2,4' matches '2,4,6'
+            // does array contain a subarray?
+            // or...is a subarray in a larger array?
+            return arr.every((num) => indexesOfPlayer.includes(num))
           })
         }
 
-        $('.overlay').click(function(event) {
+        const onSquareClick = function(event) {
           let lastPlayer;
           if (!over) {
             $(event.target).text(currentPlayer)
 
             $(event.target).removeClass('overlay')
+
             gameBoard[$(event.target).attr('id')] = currentPlayer
-            if (drawGame(gameBoard)) {
-              over = true
-            } else if (winGame(gameBoard, currentPlayer)) {
+            if (winGame(gameBoard, currentPlayer)) {
               over = true
               $('body').hide(5000, function(){
-                $('body').show(5000).html("<h1>" + lastPlayer + " WINS!!</h1><div class='mike'></div>")
+                let newHtml = "<h1>" + lastPlayer + " WINS!!</h1><div class='mike'></div>"
+                newHtml += "<button id='start'>Start new game</button>"
+                $('body').show(5000, function(){
+                  $('#start').click(function(event){
+                    startGame(event, gameHtml)
+                    console.log('clicked start...')
+                  })
+                })
+                .html(newHtml)
               })
+            } else if (drawGame(gameBoard)) {
+              over = true
             } else {
               console.log('keep playing...')
             }
             lastPlayer = currentPlayer
             currentPlayer = currentPlayer === 'X' ? 'O' : 'X'
           }
-        })
+        }
       })
     </script>
   </head>
