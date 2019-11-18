@@ -1,6 +1,7 @@
 let gameBoard, currentPlayer
 let over = true
 const statusEl = document.getElementById('status')
+const winConditions = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[2,4,6],[0,4,8]]
 
 const startGame = (event) => {
   gameBoard = ['','','','','','','','','']
@@ -23,12 +24,10 @@ const drawGame = gameBoard => {
   }
 }
 
-const winConditions = () => [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[2,4,6],[0,4,8]]
-
 const winGame = (gameBoard, player) => {
   const indexesOfPlayer = gameBoard.map((piece, i) => piece === player ? i : null)
     .filter(val => val !== null)
-  return winConditions().some(combo => combo.every(i => indexesOfPlayer.includes(i)))
+  return winConditions.some(combo => combo.every(i => indexesOfPlayer.includes(i)))
 }
 
 const onSquareClick = function(event) {
