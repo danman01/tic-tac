@@ -1,160 +1,82 @@
 <html>
   <head>
     <link rel="stylesheet" href="./index.css">
-    <script
-      src="https://code.jquery.com/jquery-3.4.1.min.js"
-      integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
-      crossorigin="anonymous">
-    </script>
+  </head>
+  <body>
+    <h3 id="status"> Tic Tac </h3>
+    <div class="container">
+      <div class="row">
+        <div class="column overlay" id="0">
+        </div>
+        <div class="column overlay" id="1">
+        </div>
+        <div class="column overlay" id="2">
+        </div>
+      </div>
+      <div class="row">
+        <div class="column overlay" id="3">
+        </div>
+        <div class="column overlay" id="4">
+        </div>
+        <div class="column overlay" id="5">
+        </div>
+      </div>
+      <div class="row">
+        <div class="column overlay" id="6">
+        </div>
+        <div class="column overlay" id="7">
+        </div>
+        <div class="column overlay" id="8">
+        </div>
+      </div>
+    </div>
+    <button id='start'>Start Game</button>
+
     <script type='text/javascript'>
-      $(document).ready(function() {
-
-        let gameBoard
-        let currentPlayer
+      // js equivalent? $(document).ready(function() {
+      // just put script tag at end of page....
+        let gameBoard, currentPlayer
         let over = true
-        const gameHtml = $('body').html()
+        const statusEl = document.getElementById('status')
 
-        const startGame = (event, gameHtml) => {
+        const startGame = (event) => {
           gameBoard = ['','','','','','','','','']
           currentPlayer = 'X'
           over = false
-          if(gameHtml !== undefined) {
-            console.log('replacing game html...')
-            $('body').html(gameHtml)
-          }
-          $('.overlay').click(onSquareClick)
-          $('.container').animate({
-            //opacity: 0.25,
-            left: "+=50",
-            // display: 'toggle',
-            height: "toggle"
-          }, 5000, function() {
-            // Animation complete.
-          });
-          $("#start").hide()
-        }
-
-        $('#start').click(startGame)
-
-        const occupied = value => {
-          return value !== ''
-        }
-
-        const drawGame = (gameBoard) => {
-          if (gameBoard.every(occupied)) {
-            console.log("it's a tie!")
-            return true
+          statusEl.textContent = "Tic Tac"
+          const squares = document.getElementsByClassName('column')
+          for (let i = 0; i < squares.length; i++) {
+            squares[i].setAttribute('class', 'column overlay')
+            squares[i].textContent = ''
+            squares[i].addEventListener('click', onSquareClick)
           }
         }
+        document.getElementById('start').addEventListener('click', startGame)
 
-        const winConditions = () => {
-          return [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[2,4,6],[0,4,8]]
-        }
+        const drawGame = gameBoard => gameBoard.every(value => value !== '')
+
+        const winConditions = () => [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[2,4,6],[0,4,8]]
 
         const winGame = (gameBoard, player) => {
-          const indexesOfPlayer = gameBoard.map((piece, i) => piece === player ? i : undefined)
-            .filter((val) => val !== undefined)
-
-          // find a win condition, where every number in win condition is within player indexes
-          return winConditions().some((arr) => {
-            console.log('indexesofPlayer', player, indexesOfPlayer)
-            // '2,4,5,6' matches '2,4,6'
-            // '6,2,4' matches '2,4,6'
-            // does array contain a subarray?
-            // or...is a subarray in a larger array?
-            return arr.every((num) => indexesOfPlayer.includes(num))
-          })
+          const indexesOfPlayer = gameBoard.map((piece, i) => piece === player ? i : null)
+            .filter(val => val !== null)
+          return winConditions().some(combo => combo.every(i => indexesOfPlayer.includes(i)))
         }
 
         const onSquareClick = function(event) {
           let lastPlayer;
           if (!over) {
-            $(event.target).text(currentPlayer)
-
-            $(event.target).removeClass('overlay')
-
-            gameBoard[$(event.target).attr('id')] = currentPlayer
-            if (winGame(gameBoard, currentPlayer)) {
+            event.target.textContent = currentPlayer
+            event.target.setAttribute('class','column')
+            gameBoard[event.target.id] = currentPlayer
+            if (winGame(gameBoard, currentPlayer) || drawGame(gameBoard)) {
               over = true
-              $('body').hide(5000, function(){
-                let newHtml = "<h1>" + lastPlayer + " WINS!!</h1><div class='mike'></div>"
-                newHtml += "<button id='start'>Start new game</button>"
-                $('body').show(5000, function(){
-                  $('#start').click(function(event){
-                    startGame(event, gameHtml)
-                    console.log('clicked start...')
-                  })
-                })
-                .html(newHtml)
-              })
-            } else if (drawGame(gameBoard)) {
-              over = true
-            } else {
-              console.log('keep playing...')
+              statusEl.textContent = `${currentPlayer} wins!!!`
             }
             lastPlayer = currentPlayer
             currentPlayer = currentPlayer === 'X' ? 'O' : 'X'
           }
         }
-      })
     </script>
-  </head>
-  <body>
-    <h3> 3x1 </h3>
-    <div class="row-container">
-      <div class="col">This little piggy went to market.</div>
-      <div class="col">This little piggy stayed home.</div>
-      <div class="col">This little piggy had roast beef.</div>
-    </div>
-
-    <h3> 3x2 </h3>
-    <div class="row-container">
-      <div class="col">This little piggy went to market.</div>
-      <div class="col">This little piggy stayed home.</div>
-      <div class="col">This little piggy had roast beef.</div>
-    </div>
-    <div class="row-container">
-      <div class="col">This little piggy went to market.</div>
-      <div class="col">This little piggy stayed home.</div>
-      <div class="col">This little piggy had roast beef.</div>
-    </div>
-
-    <h3> 3x3 using rows and columns </h3>
-    <div class="container" style="display:none;">
-      <div class="row">
-        <div class="column overlay" id="0">
-          <!-- 33.33% width -->
-        </div>
-        <div class="column overlay" id="1">
-          <!-- 33.33% width -->
-        </div>
-        <div class="column overlay" id="2">
-          <!-- 33.33% width -->
-        </div>
-      </div>
-      <div class="row">
-        <div class="column overlay" id="3">
-          <!-- 33.33% width -->
-        </div>
-        <div class="column overlay" id="4">
-          <!-- 33.33% width -->
-        </div>
-        <div class="column overlay" id="5">
-          <!-- 33.33% width -->
-        </div>
-      </div>
-      <div class="row">
-        <div class="column overlay" id="6">
-          <!-- 33.33% width -->
-        </div>
-        <div class="column overlay" id="7">
-          <!-- 33.33% width -->
-        </div>
-        <div class="column overlay" id="8">
-          <!-- 33.33% width -->
-        </div>
-      </div>
-    </div>
-    <button id='start'>Start Game</button>
   </body>
 </html>
